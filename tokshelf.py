@@ -580,7 +580,7 @@ def _selftest():
     proj = os.path.join(root, "proj-a")
     os.makedirs(os.path.join(proj, ".git"))
     secrets = {
-        "gitee": "352c9c671d2a4a5ebb8326ef4e31aaaa",      # 假 token，仅测试
+        "gitee": "a1b2c3d4e5f6a7b8a1b2c3d4e5f6a7b8",      # 假 token，仅测试
         "github": "ghp_FAKE1234567890abcdefFAKE9876efgh",
         "openai": "sk-fake1234567890abcdef1234567890ab",
         "netrc": "fakepass2026",
@@ -648,7 +648,7 @@ def _selftest():
     # ========== 01-06 redact 脱敏 ==========
     def t01():
         r = redact(secrets["gitee"])
-        assert r == "352c…aaaa", r
+        assert r == "a1b2…a7b8", r
         assert secrets["gitee"] not in r
     def t02():
         r = redact(secrets["github"])
@@ -696,13 +696,13 @@ def _selftest():
         assert creds[0]["type"] in ("git-remote", "env", "netrc")
         g = [c for c in creds if c["provider"] == "gitee"]
         assert len(g) == 2      # .git/config 一处 + .env 一处
-        assert g[0]["fp"] == "352c…aaaa"
+        assert g[0]["fp"] == "a1b2…a7b8"
     def t14():
         rc, out = capture(cmd_scan, type("A", (), {
             "paths": [root], "json": False, "baseline": None})())
         for s in secrets.values():
             assert s not in out, "明文泄漏进 scan 输出!"
-        assert "352c…aaaa" in out and "unprobed" not in out
+        assert "a1b2…a7b8" in out and "unprobed" not in out
     def t15():
         rc, out = capture(cmd_scan, type("A", (), {
             "paths": [root], "json": True, "baseline": None})())
@@ -800,13 +800,13 @@ def _selftest():
         assert "EXPIRED=1" in out and "EXPIRING(≤14天)=1" in out, out
         assert rc == 1
         shelf = load_shelf(p)
-        assert shelf["entries"][0]["fp"] == "352c…aaaa"  # 台账也脱敏
+        assert shelf["entries"][0]["fp"] == "a1b2…a7b8"  # 台账也脱敏
 
     # ========== 26 基线兜底 + report 汇总 ==========
     def t26():
         bl = os.path.join(tmp.name, "baseline.txt")
         with open(bl, "w") as f:
-            f.write("352c…aaaa\n")
+            f.write("a1b2…a7b8\n")
         creds = scan_paths([root], baseline=load_baseline(bl))
         marks = [c.get("baseline") for c in creds if c["provider"] == "gitee"]
         assert any(marks), marks
