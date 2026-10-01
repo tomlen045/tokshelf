@@ -1,0 +1,17 @@
+# 公众号排版草稿是内部文件，绝不入公开仓（历史教训 b98132d）
+公众号排版版.html
+report.md
+screenshots草稿*
+
+# 内部脚本与密料容器，不入仓
+make_shots.py
+make_cover_pil.py
+demo-run/
+scripts/
+
+# macOS
+.DS_Store
+__pycache__/
+*.pyc
+publish_gitee.py
+publish_github.py
